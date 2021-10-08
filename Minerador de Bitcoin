@@ -1,0 +1,37 @@
+# Importando a biblioteca de criptografia sha256 e a biblioteca de tempo
+from hashlib import sha256
+import time
+
+# Aqui iremos criar a função de criptografia
+def aplicar_sha256(txt):
+    return sha256(txt.encode('ascii')).hexdigest()
+
+# Criaremos a função bitcon que cria o hash atual
+def bitcoin(bloco, transacoes, hash_anterior, qtde_zeros):
+    nonce = 0
+    while 1:
+        texto = str(bloco) + transacoes + hash_anterior + str(nonce)
+        hash_atual = aplicar_sha256(texto)
+        if hash_atual.startswith('0' * qtde_zeros):
+            return nonce, hash_atual
+        nonce += 1
+
+
+# Aqui algumas informações necessárias do hash
+if __name__ == '__main__':
+    bloco = 25
+    transacoes = """
+    Davi -> R$10,00 -> Dougllas
+    Ana -> R$7,00 -> Rafa
+    Dougllas -> R$15,00 -> Rafa
+    """
+    hash_anterior = '00000d02f9f107e9affc2c2694298e09cd5eeed9ea71a2310c0538c3855977ec'
+    
+    # Precisamos saber quantos 0 tem o início do hash
+    qtde_zeros = 5
+    
+    # A função que calcula o temo que demorou para achar o hash e os resultados
+    inicio = time.time()
+    resultado = bitcoin(bloco, transacoes, hash_anterior, qtde_zeros)
+    print(resultado)
+    print(time.time() - inicio)
